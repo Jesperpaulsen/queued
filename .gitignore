@@ -21,3 +21,9 @@ doc/api/
 *.js.map
 
 .idea
+
+web/index.html
+GoogleService-Ifo.plist
+google-services.json
+
+ios/Runner/GoogleService-Info.plist
