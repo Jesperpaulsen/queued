@@ -32,7 +32,7 @@ class _JoinState extends State<Join> {
     if (partyID.isEmpty) return;
     await context.read(PartyRoomProvider.provider).mountPartyRoom(partyID);
     if (context.read(PartyRoomProvider.provider.state).partyRoom != null)
-      Navigator.of(context, rootNavigator: true).pushNamed(HomeRoute.path);
+      Navigator.of(context, rootNavigator: true).pushNamed(PartyRoute.path);
   }
 
   void _changeMode() {

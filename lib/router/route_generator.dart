@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:queued/screens/home.dart';
 import 'package:queued/screens/logged_out.dart';
+import 'package:queued/screens/party.dart';
 
 abstract class AbstractRoute {
   MaterialPageRoute<dynamic> generatePage();
@@ -15,13 +15,13 @@ class LoggedOutRoute implements AbstractRoute {
   static const path = '/logged-out';
 }
 
-class HomeRoute implements AbstractRoute {
+class PartyRoute implements AbstractRoute {
   @override
   MaterialPageRoute generatePage() {
-    return MaterialPageRoute(builder: (_) => Home());
+    return MaterialPageRoute(builder: (_) => Party());
   }
 
-  static const path = '/home';
+  static const path = '/party';
 }
 
 class ErrorRoute implements AbstractRoute {
@@ -41,8 +41,8 @@ Route<dynamic> routeMapper(String route) {
   switch (route) {
     case LoggedOutRoute.path:
       return LoggedOutRoute().generatePage();
-    case HomeRoute.path:
-      return HomeRoute().generatePage();
+    case PartyRoute.path:
+      return PartyRoute().generatePage();
     default:
       return LoggedOutRoute().generatePage();
   }

@@ -1,46 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:queued/configs/colors.dart';
 
 class BackgroundRect extends StatelessWidget {
   final Color color;
   final double height;
-  BackgroundRect({@required this.color, @required this.height});
+  final Widget child;
+  BackgroundRect({
+    @required this.child,
+    this.height,
+    color,
+  }) : this.color = color ?? AppColors.secondary;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: CustomPaint(
-        painter:
-            BackgroundRectDrawer(rectColor: Theme.of(context).primaryColor),
-        child: Container(
-          height: height,
+    return Center(
+      child: Container(
+        height: height ?? MediaQuery.of(context).size.height * 0.7,
+        width: double.infinity,
+        child: ClipPath(
+          clipper: BackgroundClipper(),
+          child: Container(
+            color: AppColors.primary,
+            child: child,
+          ),
         ),
       ),
     );
   }
 }
 
-class BackgroundRectDrawer extends CustomPainter {
-  final Color rectColor;
-  BackgroundRectDrawer({@required this.rectColor});
+class BackgroundClipper extends CustomClipper<Path> {
   final double offset = 80;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = rectColor;
-
-    var path = Path();
+  Path getClip(Size size) {
+    final path = Path();
     path.moveTo(size.width, 0);
     path.lineTo(0, 0 + offset);
     path.lineTo(0, size.height);
     path.lineTo(size.width, size.height - offset);
     path.close();
-    canvas.drawPath(path, paint);
+    return path;
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    // TODO: implement shouldReclip
     return false;
   }
 }
