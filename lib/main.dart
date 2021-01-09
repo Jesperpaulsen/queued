@@ -8,7 +8,7 @@ import 'package:queued/router/route_generator.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await AuthProvider.signIn();
+  await Auth.signIn();
   runApp(ProviderScope(child: Queued()));
 }
 
@@ -23,9 +23,9 @@ class Queued extends ConsumerWidget {
         accentColor: AppColors.secondary,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         backgroundColor: AppColors.secondary,
-        textTheme: TextTheme(
-          bodyText2: TextStyle(color: Colors.white),
-        ),
+        textTheme: ThemeData.light().textTheme.copyWith(
+              bodyText2: TextStyle(color: Colors.white),
+            ),
       ),
       initialRoute: '/',
       onUnknownRoute: (settings) {

@@ -23,7 +23,7 @@ class _JoinState extends State<Join> {
   _createParty(BuildContext context) async {
     final partyName = _textController.text;
     if (partyName.isEmpty) return;
-    await context.read(PartyRoomProvider.provider).createPartyRoom(partyName);
+    context.read(PartyRoomProvider.provider).createPartyRoom(partyName);
     // Navigator.of(context).pushNamed('/');
   }
 
@@ -43,6 +43,7 @@ class _JoinState extends State<Join> {
 
   @override
   Widget build(BuildContext context) {
+    _textController.text = "892697"; // TODO: Remove this ;)
     return Container(
       constraints: BoxConstraints(maxWidth: 270),
       child: Column(
@@ -82,9 +83,12 @@ class _JoinState extends State<Join> {
                         textColor: AppColors.white,
                         label: mode == Mode.JOIN ? 'Continue' : 'Create party',
                         minWidth: 400,
-                        onPressed: () => mode == Mode.JOIN
-                            ? _joinParty(context)
-                            : _createParty(context),
+                        onPressed: () {
+                          if (mode == Mode.JOIN)
+                            _joinParty(context);
+                          else
+                            _createParty(context);
+                        },
                         loading:
                             watch(PartyRoomProvider.provider.state).loading ??
                                 false,

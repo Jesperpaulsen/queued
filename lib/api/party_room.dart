@@ -11,14 +11,20 @@ class PartyRoomAPI {
         .set(partyRoom.toJSON());
   }
 
-  StreamSubscription<DocumentSnapshot> mountPartyRoom(
-      String partyID, Function(PartyRoom partyRoom) callback) {
-    return FirebaseFirestore.instance
-        .collection('partyrooms')
-        .doc(partyID)
-        .snapshots()
-        .listen((doc) {
-      if (doc.exists) return callback(PartyRoom.fromJSON(doc.data()));
-    });
+  Stream<PartyRoom> mountPartyRoom(String partyID) {
+    try {
+      return FirebaseFirestore.instance
+          .collection('partyrooms')
+          .doc(partyID)
+          .snapshots()
+          .map((snapshot) {
+        if (snapshot.exists)
+          return PartyRoom.fromJSON(snapshot.data());
+        else
+          throw new Error();
+      });
+    } catch (error) {
+      return Stream<PartyRoom>.empty();
+    }
   }
 }

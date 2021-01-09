@@ -48,10 +48,15 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
     setLoading(false);
   }
 
-  mountPartyRoom(String partyID) {
+  mountPartyRoom(String partyID) async {
     setLoading(true);
     try {
-      API.partyRoom.mountPartyRoom(partyID, setPartyRoom);
+      final partyRoomStream = API.partyRoom.mountPartyRoom(partyID);
+      partyRoomStream.listen((partyRoom) {
+        setPartyRoom(partyRoom);
+      });
+      await for (PartyRoom partyRoom in partyRoomStream)
+        return partyRoom ?? false;
     } catch (error) {
       print(error);
     }
@@ -59,5 +64,5 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
   }
 
   static final provider = StateNotifierProvider(
-      (ref) => PartyRoomProvider(ref.watch(AuthProvider.user)));
+      (ref) => PartyRoomProvider(ref.watch(Auth.provider)));
 }

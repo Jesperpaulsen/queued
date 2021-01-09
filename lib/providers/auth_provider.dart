@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/all.dart';
 
-class AuthProvider {
+class Auth {
   static signIn() async {
     return FirebaseAuth.instance.signInAnonymously();
   }
@@ -10,7 +10,7 @@ class AuthProvider {
     return FirebaseAuth.instance.signOut();
   }
 
-  static var user = StreamProvider<User>((ref) {
+  static var provider = StreamProvider<User>((ref) {
     return FirebaseAuth.instance.authStateChanges();
   });
 }
