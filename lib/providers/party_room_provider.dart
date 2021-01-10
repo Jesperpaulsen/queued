@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/api/api.dart';
 import 'package:queued/models/party_room.dart';
-import 'package:queued/providers/auth_provider.dart';
+import 'package:queued/providers/user_provider.dart';
 
 class PartyRoomState {
   bool loading;
@@ -16,9 +15,9 @@ class PartyRoomState {
 }
 
 class PartyRoomProvider extends StateNotifier<PartyRoomState> {
-  final AsyncValue<User> authProvider;
+  final UserProvider userProvider;
   StreamSubscription<PartyRoom> _subscription;
-  PartyRoomProvider(this.authProvider) : super(PartyRoomState());
+  PartyRoomProvider(this.userProvider) : super(PartyRoomState());
 
   setLoading(bool loading) {
     var newState = state;
@@ -39,7 +38,7 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
         created: new DateTime.now().millisecondsSinceEpoch,
         fallback: "",
         name: partyName,
-        host: authProvider.data.value.uid,
+        host: userProvider.state.user.uid,
         playingPlaylist: false,
         votesForNext: 1,
       );
@@ -68,8 +67,11 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
 
   clearPartyRoom() {
     _subscription.cancel();
+    setPartyRoom(null);
   }
 
-  static final provider = StateNotifierProvider(
-      (ref) => PartyRoomProvider(ref.watch(Auth.provider)));
+  static final provider = StateNotifierProvider<PartyRoomProvider>((ref) {
+    final userProvider = ref.watch(UserProvider.provider);
+    return PartyRoomProvider(userProvider);
+  });
 }

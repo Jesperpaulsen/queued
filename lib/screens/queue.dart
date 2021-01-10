@@ -22,27 +22,28 @@ class Queue extends ConsumerWidget {
         stream: queueStream,
         builder:
             (BuildContext context, AsyncSnapshot<List<QueueRequest>> snapshot) {
-          if (snapshot.hasError)
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError)
             return Center(
               child: Text("Something went wrong when loading the queue :("),
             );
-          if (!snapshot.hasData)
-            return Center(
-              child: Text("There are no songs in the queue."),
+          else
+            return ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return (!partyRoomState.partyRoom.playingPlaylist && index == 0)
+                    ? SizedBox(
+                        height: 70,
+                      )
+                    : QueueRequestVM(
+                        padding: _getPadding(index, snapshot.data.length),
+                        queueRequest: snapshot.data[index],
+                      );
+              },
+              itemCount: snapshot.data.length,
             );
-          return ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return (!partyRoomState.partyRoom.playingPlaylist && index == 0)
-                  ? SizedBox(
-                      height: 70,
-                    )
-                  : QueueRequestVM(
-                      padding: _getPadding(index, snapshot.data.length),
-                      queueRequest: snapshot.data[index],
-                    );
-            },
-            itemCount: snapshot.data.length,
-          );
         },
       ),
     );

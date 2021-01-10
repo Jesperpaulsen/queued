@@ -1,14 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/configs/colors.dart';
-import 'package:queued/providers/auth_provider.dart';
+import 'package:queued/providers/user_provider.dart';
 import 'package:queued/router/route_generator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await Auth.signIn();
+  if (kIsWeb)
+    await FirebaseFirestore.instance.enablePersistence();
+  else
+    FirebaseFirestore.instance.settings = Settings(persistenceEnabled: true);
+  await UserProvider.signIn();
   runApp(ProviderScope(child: Queued()));
 }
 

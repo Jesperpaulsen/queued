@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/configs/colors.dart';
 import 'package:queued/providers/party_room_provider.dart';
+import 'package:queued/providers/user_provider.dart';
 import 'package:queued/widgets/menu/menu_bottom.dart';
 
 class Menu extends ConsumerWidget {
@@ -11,7 +12,7 @@ class Menu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final partyRoomState = watch(PartyRoomProvider.provider.state);
-
+    final userState = watch(UserProvider.provider.state);
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
@@ -40,7 +41,7 @@ class Menu extends ConsumerWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text("# ${partyRoomState.partyRoom.partyID}"),
                   ),
-                  Text("Your name is Jesper"),
+                  Text("Your name is ${userState.user.displayName}"),
                 ],
               ),
             ),

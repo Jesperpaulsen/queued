@@ -14,6 +14,7 @@ class QueueAPI {
         .orderBy('requested')
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) {
+              print("mounted");
               return QueueRequest.fromJson(doc.data());
             }).toList());
   }

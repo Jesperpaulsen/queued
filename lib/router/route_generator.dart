@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:queued/screens/logged_out.dart';
+import 'package:queued/screens/logged_out/logged_out.dart';
 import 'package:queued/screens/party.dart';
 
 abstract class AbstractRoute {
