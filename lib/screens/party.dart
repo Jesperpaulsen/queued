@@ -4,6 +4,8 @@ import 'package:queued/screens/tab_screens.dart';
 import 'package:queued/widgets/bottom_bar/custom_bottom_bar.dart';
 import 'package:queued/widgets/shared/custom_app_bar.dart';
 
+import 'menu.dart';
+
 class Party extends StatefulWidget {
   @override
   _PartyState createState() => _PartyState();
@@ -11,6 +13,13 @@ class Party extends StatefulWidget {
 
 class _PartyState extends State<Party> {
   var _currentIndex = 0;
+  var _showMenu = false;
+
+  void setShowMenu(bool showMenu) {
+    setState(() {
+      _showMenu = showMenu;
+    });
+  }
 
   void updateCurrentIndex(int index) {
     setState(() {
@@ -20,17 +29,23 @@ class _PartyState extends State<Party> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(tabScreens[_currentIndex].topLabel),
-      backgroundColor: AppColors.secondary,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: tabScreens.map((e) => e.screen).toList(),
-      ),
-      bottomNavigationBar: CustomBottomBar(
-        currentIndex: _currentIndex,
-        onTap: updateCurrentIndex,
-      ),
+    return IndexedStack(
+      index: _showMenu ? 0 : 1,
+      children: [
+        Menu(setShowMenu),
+        Scaffold(
+          appBar: CustomAppBar(tabScreens[_currentIndex].topLabel, setShowMenu),
+          backgroundColor: AppColors.secondary,
+          body: IndexedStack(
+            index: _currentIndex,
+            children: tabScreens.map((e) => e.screen).toList(),
+          ),
+          bottomNavigationBar: CustomBottomBar(
+            currentIndex: _currentIndex,
+            onTap: updateCurrentIndex,
+          ),
+        )
+      ],
     );
   }
 }

@@ -5,7 +5,8 @@ import 'package:queued/providers/party_room_provider.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String _title;
-  CustomAppBar(this._title);
+  final Function(bool showMenu) showMenu;
+  CustomAppBar(this._title, this.showMenu);
 
   @override
   Size get preferredSize => Size.fromHeight(60);
@@ -19,7 +20,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
           Icons.menu,
           color: Theme.of(context).primaryColor,
         ),
-        onPressed: () {},
+        onPressed: () => showMenu(true),
       ),
       centerTitle: true,
       title: titleBuilder(_title, _partyRoomState.partyRoom),

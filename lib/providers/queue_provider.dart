@@ -8,7 +8,6 @@ class QueueProvider {
     final partyRoomState = ref.watch(PartyRoomProvider.provider.state);
     if (partyRoomState.partyRoom == null)
       return Stream<List<QueueRequest>>.empty();
-    return API.queue.mountQueue(partyRoomState.partyRoom.partyID,
-        partyRoomState.partyRoom.playingPlaylist);
+    return API.queue.mountQueue(partyRoomState.partyRoom.partyID);
   });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/all.dart';
 
 class QueueRequest extends ChangeNotifier {
   final String addedBy;
@@ -55,4 +56,6 @@ class QueueRequest extends ChangeNotifier {
       Duration(milliseconds: 10),
     );
   }
+
+  get provider => ChangeNotifierProvider((_) => this);
 }

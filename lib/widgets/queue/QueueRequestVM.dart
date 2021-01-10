@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:queued/configs/colors.dart';
 import 'package:queued/models/queue_request.dart';
 
-class QueueRequestVM extends StatelessWidget {
+class QueueRequestVM extends ConsumerWidget {
   final QueueRequest queueRequest;
   final EdgeInsets padding;
 
   QueueRequestVM({@required this.padding, @required this.queueRequest});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final _queueRequestProvider = watch<QueueRequest>(queueRequest.provider);
     return Padding(
       padding: padding,
       child: Column(
@@ -50,9 +52,11 @@ class QueueRequestVM extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(
                       Icons.thumb_up,
-                      color: Colors.white,
+                      color: _queueRequestProvider.upVotedByUser
+                          ? AppColors.secondary
+                          : Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: _queueRequestProvider.voteForSong,
                   ),
                 ),
               ],

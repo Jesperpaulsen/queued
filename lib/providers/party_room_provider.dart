@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/api/api.dart';
@@ -15,6 +17,7 @@ class PartyRoomState {
 
 class PartyRoomProvider extends StateNotifier<PartyRoomState> {
   final AsyncValue<User> authProvider;
+  StreamSubscription<PartyRoom> _subscription;
   PartyRoomProvider(this.authProvider) : super(PartyRoomState());
 
   setLoading(bool loading) {
@@ -45,22 +48,26 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
     } catch (error) {
       print(error);
     }
-    setLoading(false);
   }
 
   mountPartyRoom(String partyID) async {
     setLoading(true);
     try {
       final partyRoomStream = API.partyRoom.mountPartyRoom(partyID);
-      partyRoomStream.listen((partyRoom) {
+      _subscription = partyRoomStream.listen((partyRoom) {
         setPartyRoom(partyRoom);
       });
       await for (PartyRoom partyRoom in partyRoomStream)
         return partyRoom ?? false;
     } catch (error) {
       print(error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  }
+
+  clearPartyRoom() {
+    _subscription.cancel();
   }
 
   static final provider = StateNotifierProvider(

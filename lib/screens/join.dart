@@ -23,8 +23,9 @@ class _JoinState extends State<Join> {
   _createParty(BuildContext context) async {
     final partyName = _textController.text;
     if (partyName.isEmpty) return;
-    context.read(PartyRoomProvider.provider).createPartyRoom(partyName);
-    // Navigator.of(context).pushNamed('/');
+    await context.read(PartyRoomProvider.provider).createPartyRoom(partyName);
+    if (context.read(PartyRoomProvider.provider.state).partyRoom != null)
+      Navigator.of(context, rootNavigator: true).pushNamed(PartyRoute.path);
   }
 
   _joinParty(BuildContext context) async {
