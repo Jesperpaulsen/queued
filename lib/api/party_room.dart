@@ -27,4 +27,11 @@ class PartyRoomAPI {
       return Stream<PartyRoom>.empty();
     }
   }
+
+  Future<void> setPlayingPlaylist(String partyID, bool playingPlaylist) {
+    return FirebaseFirestore.instance
+        .collection('partyrooms')
+        .doc(partyID)
+        .update({"playingPlaylist": playingPlaylist});
+  }
 }

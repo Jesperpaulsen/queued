@@ -1,37 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:queued/services/spotify.dart';
+import 'package:flutter_riverpod/all.dart';
+import 'package:queued/providers/spotify_provider.dart';
 
-class Library extends StatefulWidget {
+class Library extends ConsumerWidget {
   @override
-  _LibraryState createState() => _LibraryState();
-}
+  Widget build(BuildContext context, ScopedReader watch) {
+    final spotifyState = watch(SpotifyProvider.provider.state);
+    final spotifyProvider = context.read(SpotifyProvider.provider);
 
-class _LibraryState extends State<Library> {
-  var loading = false;
-  var connected = false;
-
-  connectToSpotify() async {
-    try {
-      var result = await Spotify().connect("Test");
-      setState(() {
-        connected = result;
-      });
-    } catch (e) {
-      print("Hallo");
-      print(e);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: [
-          Text(connected ? "Koblet til" : "Ikke koblet til"),
+          Text(spotifyState.connected ? "Koblet til" : "Ikke koblet til"),
           Center(
             child: FlatButton(
               child: Text("Connect"),
-              onPressed: connectToSpotify,
+              onPressed: () => spotifyProvider.connect(),
             ),
           ),
         ],
