@@ -29,3 +29,5 @@ google-services.json
 ios/Runner/GoogleService-Info.plist
 
 .flutter-plugins-dependencies
+
+.env

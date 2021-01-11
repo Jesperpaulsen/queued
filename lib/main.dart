@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/configs/colors.dart';
 import 'package:queued/providers/user_provider.dart';
@@ -15,6 +16,7 @@ void main() async {
   else
     FirebaseFirestore.instance.settings = Settings(persistenceEnabled: true);
   await UserProvider.signIn();
+  await DotEnv().load('.env');
   runApp(ProviderScope(child: Queued()));
 }
 
