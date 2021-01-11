@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/configs/colors.dart';
 import 'package:queued/models/queue_request.dart';
+import 'package:queued/providers/party_room_provider.dart';
+import 'package:queued/providers/user_provider.dart';
 
 class QueueRequestVM extends ConsumerWidget {
   final QueueRequest queueRequest;
@@ -12,6 +14,8 @@ class QueueRequestVM extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final _queueRequestProvider = watch<QueueRequest>(queueRequest.provider);
+    final _partyID = watch(PartyRoomProvider.provider.state).partyRoom.partyID;
+    final _userID = watch(UserProvider.provider.state).user.uid;
     return Padding(
       padding: padding,
       child: Column(
@@ -56,7 +60,8 @@ class QueueRequestVM extends ConsumerWidget {
                           ? AppColors.secondary
                           : Colors.white,
                     ),
-                    onPressed: _queueRequestProvider.voteForSong,
+                    onPressed: () =>
+                        _queueRequestProvider.voteForSong(_partyID, _userID),
                   ),
                 ),
               ],

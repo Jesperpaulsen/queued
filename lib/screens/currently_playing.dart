@@ -12,17 +12,18 @@ class CurrentlyPlaying extends ConsumerWidget {
     final queueStream = watch(QueueProvider.provider.stream);
     final partyRoomState = watch(PartyRoomProvider.provider.state);
     return BackgroundRect(
-      child: StreamBuilder(
-        stream: queueStream,
-        builder:
-            (BuildContext context, AsyncSnapshot<List<QueueRequest>> snapshot) {
-          if (snapshot.hasData && !partyRoomState.partyRoom.playingPlaylist) {
-            return PlayingFromQueue(snapshot.data.first);
-          } else
-            return notPlayingFromQueue();
-        },
-      ),
-    );
+        child: StreamBuilder(
+      stream: queueStream,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<QueueRequest>> snapshot) {
+        if (snapshot.hasData &&
+            snapshot.data.isNotEmpty &&
+            !partyRoomState.partyRoom.playingPlaylist) {
+          return PlayingFromQueue(snapshot.data.first);
+        } else
+          return notPlayingFromQueue();
+      },
+    ));
   }
 }
 

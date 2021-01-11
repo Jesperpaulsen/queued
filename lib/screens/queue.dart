@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:queued/models/queue_request.dart';
 import 'package:queued/providers/party_room_provider.dart';
 import 'package:queued/providers/queue_provider.dart';
+import 'package:queued/screens/currently_playing.dart';
 import 'package:queued/widgets/queue/QueueRequestVM.dart';
 import 'package:queued/widgets/shared/background_rect.dart';
 
@@ -30,7 +31,12 @@ class Queue extends ConsumerWidget {
             return Center(
               child: Text("Something went wrong when loading the queue :("),
             );
-          else
+          else if (snapshot.data.isEmpty ||
+              (snapshot.hasData &&
+                  snapshot.data.length == 1 &&
+                  !partyRoomState.partyRoom.playingPlaylist)) {
+            return notPlayingFromQueue();
+          } else
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return (!partyRoomState.partyRoom.playingPlaylist && index == 0)

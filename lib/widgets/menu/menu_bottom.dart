@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:queued/providers/party_room_provider.dart';
 import 'package:queued/router/route_generator.dart';
 
 class MenuItem {
@@ -17,7 +16,6 @@ class MenuBottom extends ConsumerWidget {
       MenuItem("Settings", () => print("Settings")),
       MenuItem("Leave party", () {
         Navigator.of(context).pushNamed(LoggedOutRoute.path);
-        context.read(PartyRoomProvider.provider).clearPartyRoom();
       })
     ];
     return Padding(
