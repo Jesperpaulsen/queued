@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/configs/colors.dart';
 import 'package:queued/models/queue_request.dart';
+import 'package:queued/providers/skip_song_provider.dart';
 import 'package:queued/widgets/shared/large_button.dart';
 
 class PlayingFromQueue extends ConsumerWidget {
@@ -12,6 +13,7 @@ class PlayingFromQueue extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final _queueRequestProvider = watch(_queueRequest.provider);
+    final _skipSongState = watch(SkipSongProvider.provider.state);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -60,9 +62,9 @@ class PlayingFromQueue extends ConsumerWidget {
           height: 50,
           minWidth: 200,
           textColor: AppColors.white,
-          onPressed: _queueRequestProvider.votedToSkipByUser
+          onPressed: _skipSongState.userHasVoted
               ? null
-              : _queueRequestProvider.voteToSkipSong,
+              : () => context.read(SkipSongProvider.provider).skipSong(),
           loading: false,
         )
       ],

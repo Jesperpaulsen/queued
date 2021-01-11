@@ -11,6 +11,6 @@ class UpVotesProvider {
     if (partyRoomState.partyRoom == null || userState.user == null)
       return Stream<QuerySnapshot>.empty();
     return API.votes
-        .mountVotes(partyRoomState.partyRoom.partyID, userState.user.uid);
+        .mountUpVotes(partyRoomState.partyRoom.partyID, userState.user.uid);
   });
 }

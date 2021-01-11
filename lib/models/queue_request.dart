@@ -16,7 +16,6 @@ class QueueRequest extends ChangeNotifier {
   final String title;
   final int upVotes;
   Vote usersUpVote;
-  var votedToSkipByUser = false;
 
   QueueRequest({
     this.requestID,
@@ -63,14 +62,6 @@ class QueueRequest extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-  }
-
-  Future<void> voteToSkipSong() async {
-    votedToSkipByUser = true;
-    notifyListeners();
-    return new Future.delayed(
-      Duration(milliseconds: 10),
-    );
   }
 
   get upVotedByUser => usersUpVote != null;
