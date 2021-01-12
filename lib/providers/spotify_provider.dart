@@ -20,25 +20,22 @@ class SpotifyProvider extends StateNotifier<SpotifyState> {
   SpotifyProvider(this.partyRoomProvider, this.queueStream)
       : super(SpotifyState());
 
-  initialize() =>
-      Spotify.instance.initialize(partyRoomProvider.state.partyRoom.partyID);
-
   setConnected(bool connected) {
     final newState = state;
     newState.connected = connected;
-    return newState;
+    state = newState;
   }
 
   setTrack(Track track) {
     final newState = state;
     newState.track = track;
-    return newState;
+    state = newState;
   }
 
   setIsPaused(bool isPaused) {
     final newState = state;
     newState.isPaused = isPaused;
-    return newState;
+    state = newState;
   }
 
   updateCurrentlyPlaying(PlayerState state) {
@@ -46,7 +43,13 @@ class SpotifyProvider extends StateNotifier<SpotifyState> {
     setIsPaused(state.isPaused);
   }
 
-  static final provider = StateNotifierProvider((ref) => SpotifyProvider(
+  static final provider = StateNotifierProvider<SpotifyProvider>((ref) {
+    final provider = SpotifyProvider(
       ref.watch(PartyRoomProvider.provider),
-      ref.watch(QueueProvider.provider.stream)));
+      ref.watch(QueueProvider.provider.stream),
+    );
+
+    Spotify.instance.setSpotifyProvider(provider);
+    return provider;
+  });
 }

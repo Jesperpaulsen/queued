@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:queued/api/api.dart';
 import 'package:queued/models/party_room.dart';
 import 'package:queued/providers/user_provider.dart';
+import 'package:queued/services/spotify.dart';
 
 class PartyRoomState {
   bool loading;
@@ -51,6 +52,7 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
 
   mountPartyRoom(String partyID) async {
     setLoading(true);
+    Spotify.instance.partyID = partyID;
     try {
       final partyRoomStream = API.partyRoom.mountPartyRoom(partyID);
       _subscription = partyRoomStream.listen((partyRoom) {

@@ -1,8 +1,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_riverpod/all.dart';
 import 'package:queued/api/api.dart';
 import 'package:queued/models/queue_request.dart';
 import 'package:queued/providers/party_room_provider.dart';
+import 'package:queued/providers/queue_provider.dart';
 import 'package:queued/providers/spotify_provider.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/player_state.dart';
@@ -14,20 +14,18 @@ class Spotify {
   String _token;
   SpotifyProvider _spotifyProvider;
   PartyRoomProvider _partyRoomProvider;
+  QueueProvider _queueProvider;
   PlayerState _playerState;
   ConnectionStatus _connectionStatus;
   QueueRequest _currentQueueRequest;
   QueueRequest _requestBeingLoaded;
+  List<QueueRequest> _queue;
   var _loadInProgress = false;
   String partyID;
 
   Spotify._privateConstructor() {
     this._clientId = DotEnv().env["SPOTIFY_CLIENT_ID"].toString();
     this._redirectUrl = DotEnv().env["SPOTIFY_REDIRECT_URI"].toString();
-
-    final container = ProviderContainer();
-    this._spotifyProvider = container.read(SpotifyProvider.provider);
-    this._partyRoomProvider = container.read(PartyRoomProvider.provider);
   }
 
   static final Spotify instance = Spotify._privateConstructor();
@@ -47,12 +45,15 @@ class Spotify {
     }
   }
 
-  initialize(String partyID) => this.partyID = partyID;
+  void setSpotifyProvider(SpotifyProvider spotifyProvider) =>
+      _spotifyProvider = spotifyProvider;
 
-  void subscribeToQueueStream(QueueRequest queueRequest) =>
-      _currentQueueRequest = queueRequest;
+  void subscribeToQueueStream(List<QueueRequest> queue) => _queue = queue;
+
+  get nextRequest => _queue.first;
 
   void _handleConnectionStatus(ConnectionStatus connectionStatus) {
+    if (_connectionStatus == null) firstLoad();
     _connectionStatus = connectionStatus;
     _spotifyProvider.setConnected(connectionStatus.connected);
   }
@@ -62,7 +63,10 @@ class Spotify {
     _spotifyProvider.updateCurrentlyPlaying(playerState);
   }
 
-  void _handleError(Error error) => print(error);
+  void _handleError(Object error) {
+    _spotifyProvider.setConnected(false);
+    print(error);
+  }
 
   listenToStateChanges() {
     final stream = SpotifySdk.subscribePlayerState();
@@ -78,9 +82,10 @@ class Spotify {
   Future<void> pause() => SpotifySdk.pause();
   Future<void> resume() => SpotifySdk.resume();
   Future<void> togglePause() =>
-      (_playerState.isPaused ?? false) ? resume() : pause();
+      (_playerState?.isPaused ?? false) ? resume() : pause();
 
   Future<void> firstLoad() async {
+    listenToStateChanges();
     _loadInProgress = true;
     _requestBeingLoaded = _currentQueueRequest;
     if (_requestBeingLoaded != null) {
