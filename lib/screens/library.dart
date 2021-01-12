@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:queued/providers/spotify_provider.dart';
+import 'package:queued/services/spotify.dart';
 
 class Library extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final spotifyState = watch(SpotifyProvider.provider.state);
-    final spotifyProvider = context.read(SpotifyProvider.provider);
 
     return Container(
       child: Column(
@@ -15,7 +15,7 @@ class Library extends ConsumerWidget {
           Center(
             child: FlatButton(
               child: Text("Connect"),
-              onPressed: () => spotifyProvider.connect(),
+              onPressed: () => Spotify.instance.connect(),
             ),
           ),
         ],

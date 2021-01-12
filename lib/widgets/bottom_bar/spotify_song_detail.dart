@@ -5,9 +5,8 @@ import 'package:spotify_sdk/models/track.dart';
 
 class SpotifySongDetail extends StatelessWidget {
   final Track track;
-  final bool isPaused;
 
-  SpotifySongDetail(this.track, this.isPaused);
+  SpotifySongDetail(this.track);
 
   @override
   Widget build(BuildContext context) {

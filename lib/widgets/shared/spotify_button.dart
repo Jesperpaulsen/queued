@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
+import 'package:queued/services/spotify.dart';
 
 class SpotifyButton extends ConsumerWidget {
-  final Function connectToSpotify;
-  SpotifyButton(this.connectToSpotify);
+  SpotifyButton();
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
@@ -15,7 +15,7 @@ class SpotifyButton extends ConsumerWidget {
           borderRadius: BorderRadius.circular(25),
         ),
         color: Colors.green,
-        onPressed: connectToSpotify,
+        onPressed: Spotify.instance.connect,
         child: Text(
           "Connect to spotify",
           style: TextStyle(color: Colors.white),
