@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:queued/api/api.dart';
 import 'package:queued/models/queue_request.dart';
 import 'package:queued/providers/spotify_provider.dart';
+import 'package:queued/services/spotify_token.dart';
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -9,7 +10,7 @@ import 'package:spotify_sdk/spotify_sdk.dart';
 class Spotify {
   String _clientId;
   String _redirectUrl;
-  String _token;
+
   SpotifyProvider _spotifyProvider;
   PlayerState _playerState;
   ConnectionStatus _connectionStatus;
@@ -31,6 +32,16 @@ class Spotify {
 
   static final instance = Spotify._privateConstructor();
 
+  QueueRequest get _nextRequest {
+    if (_playingPlaylist || _firstLoadAfterConnection) {
+      return _queue.first;
+    }
+    if (!_playingPlaylist && _queue.length > 1) {
+      return _queue[1];
+    }
+    return null;
+  }
+
   void cleanState() {
     _playingPlaylist = false;
     _firstLoadAfterConnection = true;
@@ -39,13 +50,14 @@ class Spotify {
   Future<void> connect() async {
     try {
       listenToConnectionChanges();
-      _token = await SpotifySdk.getAuthenticationToken(
+      final token = await SpotifySdk.getAuthenticationToken(
           clientId: _clientId,
           redirectUrl: _redirectUrl,
           scope: 'app-remote-control, '
               'user-modify-playback-state, '
               'playlist-read-private, '
               'playlist-modify-public,user-read-currently-playing');
+      SpotifyToken.instance.setSdkToken(token);
     } catch (e) {
       cleanState();
       print(e);
@@ -69,16 +81,6 @@ class Spotify {
 
   void setFallBackList(String fallbackListUri) =>
       _fallbackListUri = fallbackListUri;
-
-  QueueRequest get _nextRequest {
-    if (_playingPlaylist || _firstLoadAfterConnection) {
-      return _queue.first;
-    }
-    if (!_playingPlaylist && _queue.length > 1) {
-      return _queue[1];
-    }
-    return null;
-  }
 
   void _handleConnectionStatus(ConnectionStatus connectionStatus) {
     if (_connectionStatus == null ||
@@ -153,6 +155,7 @@ class Spotify {
       await pause();
     } catch (e) {}
     _loadInProgress = true;
+    // We only await if we really have to delete the votes before we continue.
     if (_votesRequiredToSkipSong - _numberOfVotes <= 0)
       await API.votes.clearSkipVotes(_partyID);
     else
