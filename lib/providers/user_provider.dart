@@ -35,6 +35,8 @@ class UserProvider extends StateNotifier<UserState> {
     return FirebaseAuth.instance.signOut();
   }
 
+  static getToken() async => FirebaseAuth.instance.currentUser.getIdToken();
+
   updateDisplayName(String displayName) async {
     setLoading(true);
     await FirebaseAuth.instance.currentUser

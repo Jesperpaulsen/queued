@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:queued/models/vote.dart';
+import 'package:queued/services/dio_wrapper.dart';
 
 class VotesAPI {
   Stream<QuerySnapshot> mountUpVotes(String partyID, String userID) {
@@ -49,5 +50,10 @@ class VotesAPI {
         .doc(partyID)
         .collection('votesForNext')
         .add({"userID": userID});
+  }
+
+  Future<void> clearSkipVotes(String partyID) {
+    return DioWrapper.instance.client
+        .post('/deleteVotesForNext', data: {"partyID": partyID});
   }
 }

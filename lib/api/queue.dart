@@ -23,4 +23,14 @@ class QueueAPI {
         .doc(queueRequest.requestID)
         .update({"upVotes": 99999});
   }
+
+  Future<void> markSongAsPlayed(
+      String partyID, QueueRequest queueRequest) async {
+    return FirebaseFirestore.instance
+        .collection('partyrooms')
+        .doc(partyID)
+        .collection('queue')
+        .doc(queueRequest.requestID)
+        .update({"played": true});
+  }
 }

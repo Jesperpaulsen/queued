@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:queued/api/api.dart';
 import 'package:queued/providers/party_room_provider.dart';
 import 'package:queued/providers/user_provider.dart';
+import 'package:queued/services/spotify.dart';
 
 class SkipSongProviderState {
   int numberOfVotes;
@@ -32,6 +33,7 @@ class SkipSongProvider extends StateNotifier<SkipSongProviderState> {
   }
 
   setNumberOfVotes(int numberOfVotes) {
+    Spotify.instance.setVotes(numberOfVotes);
     final newState = state;
     newState.numberOfVotes = numberOfVotes;
     state = newState;

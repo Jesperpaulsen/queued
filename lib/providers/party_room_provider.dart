@@ -27,6 +27,8 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
   }
 
   setPartyRoom(PartyRoom partyRoom) {
+    Spotify.instance.setPartyRoomDetails(
+        partyRoom.partyID, partyRoom.votesForNext, partyRoom.playingPlaylist);
     var newState = state;
     newState.partyRoom = partyRoom;
     state = newState;
@@ -52,7 +54,6 @@ class PartyRoomProvider extends StateNotifier<PartyRoomState> {
 
   mountPartyRoom(String partyID) async {
     setLoading(true);
-    Spotify.instance.partyID = partyID;
     try {
       final partyRoomStream = API.partyRoom.mountPartyRoom(partyID);
       _subscription = partyRoomStream.listen((partyRoom) {

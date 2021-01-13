@@ -45,6 +45,7 @@ class PlayingFromQueue extends ConsumerWidget {
           padding: const EdgeInsets.only(top: 8),
           child: Text(
             _queueRequest.title,
+            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18),
           ),
         ),
